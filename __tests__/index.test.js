@@ -2,7 +2,7 @@
  * Unit tests for the action's entrypoint, src/index.js
  */
 
-const { creategzFile } = require('../src/main')
+const { run } = require('../src/main')
 
 // Mock the action's entrypoint
 jest.mock('../src/main', () => ({
