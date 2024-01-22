@@ -7,7 +7,7 @@ const { expect } = require('@jest/globals')
 
 describe('shahash', () => {
   it('create sha256 hash for a folder', async () => {
-    hash = await creategzFile('src')
+    let hash = await creategzFile('src')
     console.log(hash)
     expect(hash).not.toBeFalsy()
   })
