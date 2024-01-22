@@ -15,6 +15,5 @@ async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
       return createHash('sha256').update(data).digest('hex')
     }
   })
-
 }
 module.exports = { creategzFile }
