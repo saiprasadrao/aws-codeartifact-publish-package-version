@@ -22,18 +22,19 @@ async function run() {
 
     const hash = await createPackage.creategzFile(folder)
 
-    var params = {
+    const params = {
       assetContent: 'temp.tar.gz',
-      assetName: 'temp.tar.gz', /* required */
-      assetSHA256: hash, /* required */
+      assetName: 'temp.tar.gz', /** required **/
+      assetSHA256: hash, /** required **/
       domain: domain,
       format: format,
-      package: packageName, /* required */
-      packageVersion: packageVersion, /* required */
-      repository: repository, /* required */
-      domainOwner: domainOwner,
+      package: packageName, /** required **/
+      packageVersion, /** required **/
+      repository, /** required **/
+      domainOwner,
       namespace: packageName
     }
+
     codeartifact.publishPackageVersion(params, function(err, data) {
       if (err) 
         console.log(err, err.stack); // an error occurred
