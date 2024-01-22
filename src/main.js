@@ -1,6 +1,6 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
-const { createPackage } = require('./createPackage')
+const { shaHash } = require('./shahash')
 const { CodeArtifactClient } = require('@aws-sdk/client-codeartifact')
 /**
  * The main function for the action.
@@ -17,7 +17,7 @@ async function run() {
     const packageVersion = core.getInput('package-version')
     const folder = core.getInput('folder')
 
-    const hash = await createPackage.creategzFile(folder)
+    const hash = await shaHash.creategzFile(folder)
 
     const params = {
       assetContent: 'temp.tar.gz',
