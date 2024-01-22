@@ -5,6 +5,7 @@
 const { createHash } = require('crypto')
 const exec = require('@actions/exec')
 const fs = require('fs')
+const { resolve } = require('path')
 
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
@@ -12,4 +13,5 @@ async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   const hash = createHash('sha256').update(data).digest('hex')
   return hash
 }
+
 module.exports = { creategzFile }

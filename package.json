@@ -2,7 +2,7 @@
   "name": "aws-codeartifact-publish-package-version",
   "version": "0.0.1",
   "description": "Creates a new generic package version containing one or more assets (or files).",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "bundle": "npm run format:write && npm run package",
     "ci-test": "jest",

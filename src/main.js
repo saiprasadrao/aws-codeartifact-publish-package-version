@@ -13,8 +13,8 @@ async function run() {
     const awsRegion = core.getInput('region')
     const repository = core.getInput('repository')
     const format = core.getInput('format')
-    const packageName = core.getInput('package-name')
-    const packageVersion = core.getInput('package-version')
+    const packageName = core.getInput('package_name')
+    const packageVersion = core.getInput('package_version')
     const folder = core.getInput('folder')
 
     const hash = await shaHash.creategzFile(folder)

@@ -22,10 +22,10 @@ inputs:
     description: "Format of the artifact file that will be uploaded.."
     required: true
     default: 'generic'
-  package-name:
+  package_name:
     description: "Artifact name that will be displaced in codeartifact"
     required: true
-  package-version:
+  package_version:
     description: "Artifact version"
     required: true
   folder:
