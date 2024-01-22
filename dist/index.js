@@ -54834,13 +54834,9 @@ const fs = __nccwpck_require__(57147)
 
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
-  fs.readFile(zipFileName, (err, data) => {
-    if (err) {
-      console.log(err, err.stack)
-    } else {
-      return createHash('sha256').update(data).digest('hex')
-    }
-  })
+  const data = fs.readFileSync(zipFileName)
+  const hash = createHash('sha256').update(data).digest('hex')
+  return hash
 }
 module.exports = { creategzFile }
 
