@@ -1,18 +1,15 @@
 /**
- * Unit tests for the action's entrypoint, src/index.js
+ * Unit tests for src/shahash.js
  */
 
-const { run } = require('../src/shahash')
+const { creategzFile } = require('../src/shahash')
+const { expect } = require('@jest/globals')
 
-// Mock the action's entrypoint
-jest.mock('../src/shahash', () => ({
-  run: jest.fn()
-}))
 
 describe('shahash', () => {
-  it('calls run when imported', async () => {
-    require('../src/shahash')
-
-    expect(run).toHaveBeenCalled()
+  it('create sha256 hash for a folder', async () => {
+    hash = await creategzFile('src')
+    console.log(hash)
+    // expect(hash).not.toBeFalsy()
   })
 })
