@@ -60,7 +60,7 @@ jobs:
           region: 'eu-west-1'
           repository: 'mcc-agent'
           format: 'generic'
-          package-name: 'mcc-agent'
-          package-version: '0.0.1'
+          package_name: 'mcc-agent'
+          package_version: '0.0.1'
           folder: './src'
           
