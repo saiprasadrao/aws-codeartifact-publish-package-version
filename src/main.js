@@ -34,9 +34,8 @@ async function run() {
     const codeartifact = new CodeArtifactClient({ region: awsRegion })
     codeartifact.publishPackageVersion(params, function (err, data) {
       if (err)
-        console.log(err, err.stack) // an error occurred
-      else     
-        console.log(data)          // successful response
+        console.log(err, err.stack)
+      else console.log(data)
     })
   } catch (error) {
     // Fail the workflow run if an error occurs
