@@ -1,0 +1,64 @@
+{
+  "name": "aws-codeartifact-publish-package-version",
+  "version": "0.0.1",
+  "description": "Creates a new generic package version containing one or more assets (or files).",
+  "main": "index.js",
+  "scripts": {
+    "package": "ncc build index.js --license licenses.txt"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "eslintConfig": {
+    "extends": "./.github/linters/.eslintrc.yml"
+  },
+  "jest": {
+    "verbose": true,
+    "clearMocks": true,
+    "testEnvironment": "node",
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "testMatch": [
+      "**/*.test.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ],
+    "coverageReporters": [
+      "json-summary",
+      "text",
+      "lcov"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "./src/**"
+    ]
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^6.0.0",
+    "@aws-sdk/client-codeartifact": "^3.485.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.7",
+    "@babel/eslint-parser": "^7.23.3",
+    "@babel/preset-env": "^7.23.8",
+    "@vercel/ncc": "^0.38.1",
+    "babel-preset-jest": "^29.6.3",
+    "eslint": "^8.56.0",
+    "eslint-plugin-github": "^4.10.1",
+    "eslint-plugin-jest": "^27.6.3",
+    "jest": "^29.7.0",
+    "make-coverage-badge": "^1.2.0",
+    "prettier": "^3.2.2"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

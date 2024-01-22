@@ -1,0 +1,36 @@
+name: aws-codeartifact-publish-package-version
+description: Creates a new generic package version containing one or more assets (or files).
+branding:
+  icon: code
+  color: blue
+author: saiprasadrao
+
+inputs:
+  domain:
+    description: "The name of the domain where artifact will be uploaded"
+    required: true
+  domain-owner:
+    description: "The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces."
+    required: false
+  region:
+    description: "AWS Region where CodeArtifact is enabled or will be used."
+    required: true
+  repository:
+    description: "The name of the repository that contains the package version"
+    required: true
+  format:
+    description: "Format of the artifact file that will be uploaded.."
+    required: true
+    default: 'generic'
+  package-name:
+    description: "Artifact name that will be displaced in codeartifact"
+    required: true
+  package-version:
+    description: "Artifact version"
+    required: true
+  folder:
+    description: "Folder that will be published as .gz file"
+    required: true 
+runs:
+  using: 'node20'
+  main: 'src/index.js'
