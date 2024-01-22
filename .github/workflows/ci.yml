@@ -56,7 +56,7 @@ jobs:
         uses: ./
         with:
           domain: 'golang-projects'
-          domain-owner: ''
+          domain-owner: '836765013649'
           region: 'eu-west-1'
           repository: 'mcc-agent'
           format: 'generic'
@@ -64,7 +64,3 @@ jobs:
           package-version: '0.0.1'
           folder: './src'
           
-
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
