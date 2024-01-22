@@ -35,7 +35,7 @@ async function run() {
     codeartifact.publishPackageVersion(params, function (err, data) {
       if (err) {
         console.log(err, err.stack)
-      }else {
+      } else {
         console.log(data)
       }
     })
