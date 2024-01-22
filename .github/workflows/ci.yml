@@ -55,7 +55,15 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 1000
+          domain: 'golang-projects'
+          domain-owner: ''
+          region: 'eu-west-1'
+          repository: 'mcc-agent'
+          format: 'generic'
+          package-name: 'mcc-agent'
+          package-version: '0.0.1'
+          folder: './src'
+          
 
       - name: Print Output
         id: output
