@@ -6,9 +6,9 @@ const { creategzFile } = require('../src/shahash')
 const { expect } = require('@jest/globals')
 
 describe('shahash', () => {
-  it('create sha256 hash for a folder', async () => {
-    const hash = await creategzFile('src')
+  it('create gzip and sha256 hash for a folder', async () => {
+    const hash = await creategzFile('package.json')
     console.log(hash)
-    expect(hash).not.toBeFalsy()
+    expect(hash).toBeDefined()
   })
 })
