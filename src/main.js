@@ -1,6 +1,7 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
 const { createPackage } = require('./createPackage')
+const { CodeArtifactClient } = require('@aws-sdk/client-codeartifact')
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -30,14 +31,14 @@ async function run() {
       domainOwner,
       namespace: packageName
     }
-
-    codeartifact.publishPackageVersion(params, function(err, data) {
-      if (err) 
+    const codeartifact = new CodeArtifactClient({ region: awsRegion })
+    codeartifact.publishPackageVersion(params, function (err, data) {
+      if (err)
         console.log(err, err.stack) // an error occurred
       else     
         console.log(data)          // successful response
     })
-  }catch (error) {
+  } catch (error) {
     // Fail the workflow run if an error occurs
     core.setFailed(error.message)
   }
