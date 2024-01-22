@@ -9,6 +9,6 @@ describe('shahash', () => {
   it('create sha256 hash for a folder', async () => {
     hash = await creategzFile('src')
     console.log(hash)
-    // expect(hash).not.toBeFalsy()
+    expect(hash).not.toBeFalsy()
   })
 })
