@@ -1,14 +1,10 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
-
 const { createPackage } = require('./createPackage')
-
-
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
-
 async function run() {
   try {
     const domain = core.getInput('domain')
@@ -24,23 +20,23 @@ async function run() {
 
     const params = {
       assetContent: 'temp.tar.gz',
-      assetName: 'temp.tar.gz', /** required **/
-      assetSHA256: hash, /** required **/
-      domain: domain,
-      format: format,
-      package: packageName, /** required **/
-      packageVersion, /** required **/
-      repository, /** required **/
+      assetName: 'temp.tar.gz', // required
+      assetSHA256: hash, // required
+      domain,
+      format,
+      package: packageName, // required
+      packageVersion, // required
+      repository, // required
       domainOwner,
       namespace: packageName
     }
 
     codeartifact.publishPackageVersion(params, function(err, data) {
       if (err) 
-        console.log(err, err.stack); // an error occurred
+        console.log(err, err.stack) // an error occurred
       else     
-        console.log(data);           // successful response
-    });
+        console.log(data)          // successful response
+    })
   }catch (error) {
     // Fail the workflow run if an error occurs
     core.setFailed(error.message)
