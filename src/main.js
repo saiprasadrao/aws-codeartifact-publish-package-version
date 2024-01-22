@@ -1,5 +1,5 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
+const core = require('@actions/core')
+const github = require('@actions/github')
 
 const { createPackage } = require('./createPackage')
 
@@ -11,16 +11,16 @@ const { createPackage } = require('./createPackage')
 
 async function run() {
   try {
-    const domain = core.getInput('domain');
-    const domainOwner = core.getInput('domain-owner');
-    const awsRegion = core.getInput('region');
-    const repository = core.getInput('repository');
-    const format = core.getInput('format');
-    const packageName = core.getInput('package-name');
-    const packageVersion = core.getInput('package-version');
-    const folder = core.getInput('folder');
+    const domain = core.getInput('domain')
+    const domainOwner = core.getInput('domain-owner')
+    const awsRegion = core.getInput('region')
+    const repository = core.getInput('repository')
+    const format = core.getInput('format')
+    const packageName = core.getInput('package-name')
+    const packageVersion = core.getInput('package-version')
+    const folder = core.getInput('folder')
 
-    const hash = await createPackage.creategzFile(folder);
+    const hash = await createPackage.creategzFile(folder)
 
     var params = {
       assetContent: 'temp.tar.gz',
@@ -33,7 +33,7 @@ async function run() {
       repository: repository, /* required */
       domainOwner: domainOwner,
       namespace: packageName
-    };
+    }
     codeartifact.publishPackageVersion(params, function(err, data) {
       if (err) 
         console.log(err, err.stack); // an error occurred
@@ -42,7 +42,7 @@ async function run() {
     });
   }catch (error) {
     // Fail the workflow run if an error occurs
-    core.setFailed(error.message);  
+    core.setFailed(error.message)
   }
 }
 
