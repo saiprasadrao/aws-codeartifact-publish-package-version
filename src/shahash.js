@@ -10,7 +10,7 @@ const { resolve } = require('path')
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
   const data = fs.readFileSync(zipFileName)
-  const hash = createHash('sha256').update(data).digest('hex')
+  const hash = createHash('sha256').update(data)
   return hash
 }
 
