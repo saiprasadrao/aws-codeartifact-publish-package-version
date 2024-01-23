@@ -54,17 +54,23 @@ jobs:
       - name: Install Dependencies
         id: install
         run: npm install
+      
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.OWNER }}:role/github_action_role_for_publish_code_artifact
+          aws-region: ${{ secrets.REGION }}
 
       - name: Test Local Action
         id: test-action
         uses: ./
         with:
-          domain: 'golang-projects'
-          domain-owner: '836765013649'
-          region: 'eu-west-1'
-          repository: 'mcc-agent'
+          domain: ${{ secrets.DOMAIN }}
+          domain-owner: ${{ secrets.OWNER }}
+          region: ${{ secrets.REGION }}
+          repository: ${{ secrets.REPO_NAME }}
           format: 'generic'
-          package_name: 'mcc-agent'
+          package_name: 'github-test'
           package_version: '0.0.1'
-          folder: './src'
+          folder: './dist'
           
