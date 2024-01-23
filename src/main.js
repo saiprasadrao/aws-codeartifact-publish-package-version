@@ -32,8 +32,9 @@ async function run() {
     }
 
     const client = new CodeartifactClient({})
-    const command = new PublishPackageVersionCommand(params)
-    const response = await client.send(command)
+    // const command = new PublishPackageVersionCommand(params)
+    // const response = await client.send(command)
+    const response = await client.PublishPackageVersionCommand(params)
     core.setCommandEcho(true)
   } catch (error) {
     // Fail the workflow run if an error occurs
