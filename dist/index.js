@@ -54782,8 +54782,8 @@ async function run() {
     const awsRegion = core.getInput('region')
     const repository = core.getInput('repository')
     const format = core.getInput('format')
-    const packageName = core.getInput('package-name')
-    const packageVersion = core.getInput('package-version')
+    const packageName = core.getInput('package_name')
+    const packageVersion = core.getInput('package_version')
     const folder = core.getInput('folder')
 
     const hash = await shaHash.creategzFile(folder)
@@ -54831,6 +54831,7 @@ module.exports = {
 const { createHash } = __nccwpck_require__(6113)
 const exec = __nccwpck_require__(71514)
 const fs = __nccwpck_require__(57147)
+const { resolve } = __nccwpck_require__(71017)
 
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
@@ -54838,6 +54839,7 @@ async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   const hash = createHash('sha256').update(data).digest('hex')
   return hash
 }
+
 module.exports = { creategzFile }
 
 
