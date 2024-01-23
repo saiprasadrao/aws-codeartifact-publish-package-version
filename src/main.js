@@ -1,5 +1,4 @@
 const core = require('@actions/core')
-const github = require('@actions/github')
 const { shaHash } = require('./shahash')
 const { CodeArtifactClient } = require('@aws-sdk/client-codeartifact')
 /**
@@ -41,7 +40,7 @@ async function run() {
     })
   } catch (error) {
     // Fail the workflow run if an error occurs
-    core.setFailed(error.message)
+    core.setFailed(error.stack)
   }
 }
 
