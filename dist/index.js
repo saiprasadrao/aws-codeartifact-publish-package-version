@@ -47435,7 +47435,7 @@ exports["default"] = _default;
 
 const core = __nccwpck_require__(2186)
 const { creategzFile } = __nccwpck_require__(2380)
-const { CodeartifactClient, PublishPackageVersionCommand } = __nccwpck_require__(2523)
+const { Codeartifact } = __nccwpck_require__(2523)
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -47466,9 +47466,10 @@ async function run() {
       namespace: packageName
     }
 
-    const client = new CodeartifactClient({})
-    const command = new PublishPackageVersionCommand(params)
-    const response = await client.send(command)
+    const client = new Codeartifact({ region: awsRegion })
+    // const command = new PublishPackageVersionCommand(params)
+    // const response = await client.send(command)
+    const response = await client.publishPackageVersion(params)
     core.setCommandEcho(true)
   } catch (error) {
     // Fail the workflow run if an error occurs
