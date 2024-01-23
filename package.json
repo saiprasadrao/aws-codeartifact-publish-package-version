@@ -71,7 +71,7 @@
     "JavaScript"
   ],
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./index.js"
   },
   "engines": {
     "node": ">=18"
