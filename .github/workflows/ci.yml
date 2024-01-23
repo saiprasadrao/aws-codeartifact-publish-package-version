@@ -62,7 +62,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ secrets.OWNER }}:role/github_action_role_for_publish_code_artifact
           role-session-name: samplerolesession
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ secrets.REGION }}
           
       - name: Test Local Action
         id: test-action
