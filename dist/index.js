@@ -47465,7 +47465,7 @@ async function run() {
       domainOwner,
       namespace: packageName
     }
-    const client = new CodeartifactClient({region: awsRegion})
+    const client = new CodeartifactClient({ region: awsRegion })
     const command = new PublishPackageVersionCommand(params)
     const response = await client.send(command)
     core.setCommandEcho(true)
@@ -47497,7 +47497,7 @@ const { resolve } = __nccwpck_require__(1017)
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
   const data = fs.readFileSync(zipFileName)
-  const hash = createHash('sha256').update(data).digest('hex')
+  const hash = createHash('sha256').update(data)
   return hash
 }
 
