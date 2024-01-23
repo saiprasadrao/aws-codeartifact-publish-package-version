@@ -2,7 +2,6 @@
  * Unit tests for the action's main functionality, src/main.js
  */
 const core = require('@actions/core')
-const github = require('@actions/github')
 const main = require('../src/main')
 const shahash = require('../src/shahash')
 
@@ -19,7 +18,12 @@ describe('action', () => {
   })
 
   it('takes input and return sha256', async () => {
+    getInputMock.mockImplementation(folder => {
+      return 'src'
+    })
+
     await main.run()
+
     expect(runMock).toHaveReturned()
   })
 })

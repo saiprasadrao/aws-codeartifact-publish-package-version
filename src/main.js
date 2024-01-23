@@ -1,6 +1,6 @@
 const core = require('@actions/core')
 const { creategzFile } = require('./shahash')
-const { CodeArtifactClient } = require('@aws-sdk/client-codeartifact')
+const { CodeArtifact } = require('@aws-sdk/client-codeartifact')
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -30,8 +30,8 @@ async function run() {
       domainOwner,
       namespace: packageName
     }
-    const codeartifact = new CodeArtifactClient({ region: awsRegion })
-    codeartifact.publishPackageVersion(params, function (err, data) {
+    const codeArtifact = new CodeArtifact({ region: awsRegion })
+    codeArtifact.publishPackageVersion(params, function (err, data) {
       if (err) {
         console.log(err, err.stack)
       } else {
