@@ -69,6 +69,7 @@ jobs:
         uses: ./
         with:
           domain: ${{ secrets.DOMAIN }}
+          domain-owner: ${{ secrets.OWNER }}
           region: ${{ secrets.REGION }}
           repository: ${{ secrets.REPO_NAME }}
           format: 'generic'
