@@ -8,7 +8,7 @@ const { Codeartifact } = require('@aws-sdk/client-codeartifact')
 async function run() {
   try {
     const domain = core.getInput('domain')
-    const domainOwner = core.getInput('domain-owner')
+    const domainOwner = core.getInput('domain-owner').toString()
     const awsRegion = core.getInput('region')
     const repository = core.getInput('repository')
     const format = core.getInput('format')
