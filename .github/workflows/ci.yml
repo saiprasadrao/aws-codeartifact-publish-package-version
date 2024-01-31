@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - composite_action
+      - main
 
 permissions:
   contents: read
