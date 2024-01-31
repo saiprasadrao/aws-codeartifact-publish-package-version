@@ -47444,7 +47444,7 @@ const { Codeartifact } = __nccwpck_require__(2523)
 async function run() {
   try {
     const domain = core.getInput('domain')
-    const domainOwner = core.getInput('domain-owner')
+    const domainOwner = core.getInput('domain-owner').toString()
     const awsRegion = core.getInput('region')
     const repository = core.getInput('repository')
     const format = core.getInput('format')
@@ -47490,7 +47490,7 @@ module.exports = {
  * @param {string} folder The folder name provided will be zipped
  * @param {string} zipFileName Name of the tar.gz file to be created
  */
-const { createHash } = __nccwpck_require__(6113)
+const { createHash, getHashes } = __nccwpck_require__(6113)
 const exec = __nccwpck_require__(1514)
 const fs = __nccwpck_require__(7147)
 const { resolve } = __nccwpck_require__(1017)
@@ -47498,7 +47498,7 @@ const { resolve } = __nccwpck_require__(1017)
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
   const data = fs.readFileSync(zipFileName)
-  const hash = createHash('sha256').update(data)
+  const hash = createHash('sha3-256').update(data).digest('hex')
   return hash
 }
 
