@@ -41,9 +41,9 @@ The name of the package with the versions to publish.
 
 An array of strings that specify the versions of the package to publish.
 
-## `folder`
+## `files`
 
-Folder name as string which will be compressed and published to codeartifact in generic format.
+A single file or a folder that will be published as .tar.gz file in generic format.
 
 ### Example
 
@@ -68,5 +68,5 @@ Test:
           format: 'generic'
           package_name: 'github-test'
           package_version: '0.0.1'
-          folder: 'LICENSE'
+          files: 'LICENSE'
 ```
