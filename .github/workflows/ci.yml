@@ -75,5 +75,5 @@ jobs:
           format: 'generic'
           package_name: 'github-test'
           package_version: '0.0.1'
-          folder: './dist'
+          folder: 'dist'
           
