@@ -1,0 +1,4 @@
+import { HeaderBag } from "@smithy/types";
+export declare function hasHeader(soughtHeader: string, headers: HeaderBag): boolean;
+export declare function getHeaderValue(soughtHeader: string, headers: HeaderBag): string | undefined;
+export declare function deleteHeader(soughtHeader: string, headers: HeaderBag): void;
