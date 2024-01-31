@@ -31,6 +31,8 @@ async function run() {
       namespace: packageName
     }
 
+    console.log(params)
+
     const client = new CodeartifactClient({ region: awsRegion })
     const response = await client.send(new PublishPackageVersionCommand(params))
     core.setCommandEcho(true)
