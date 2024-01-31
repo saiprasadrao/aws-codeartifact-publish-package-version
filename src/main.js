@@ -21,7 +21,7 @@ async function run() {
     const params = {
       assetContent: 'temp.tar.gz',
       assetName: 'temp.tar.gz', // required
-      assetSHA256: hash.digest('hex'), // required
+      assetSHA256: hash, // required
       domain,
       format,
       package: packageName, // required

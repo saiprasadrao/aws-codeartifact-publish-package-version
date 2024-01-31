@@ -3509,6 +3509,637 @@ var __createBinding;
 
 /***/ }),
 
+/***/ 8901:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RawSha256 = void 0;
+var constants_1 = __nccwpck_require__(5625);
+/**
+ * @internal
+ */
+var RawSha256 = /** @class */ (function () {
+    function RawSha256() {
+        this.state = Int32Array.from(constants_1.INIT);
+        this.temp = new Int32Array(64);
+        this.buffer = new Uint8Array(64);
+        this.bufferLength = 0;
+        this.bytesHashed = 0;
+        /**
+         * @internal
+         */
+        this.finished = false;
+    }
+    RawSha256.prototype.update = function (data) {
+        if (this.finished) {
+            throw new Error("Attempted to update an already finished hash.");
+        }
+        var position = 0;
+        var byteLength = data.byteLength;
+        this.bytesHashed += byteLength;
+        if (this.bytesHashed * 8 > constants_1.MAX_HASHABLE_LENGTH) {
+            throw new Error("Cannot hash more than 2^53 - 1 bits");
+        }
+        while (byteLength > 0) {
+            this.buffer[this.bufferLength++] = data[position++];
+            byteLength--;
+            if (this.bufferLength === constants_1.BLOCK_SIZE) {
+                this.hashBuffer();
+                this.bufferLength = 0;
+            }
+        }
+    };
+    RawSha256.prototype.digest = function () {
+        if (!this.finished) {
+            var bitsHashed = this.bytesHashed * 8;
+            var bufferView = new DataView(this.buffer.buffer, this.buffer.byteOffset, this.buffer.byteLength);
+            var undecoratedLength = this.bufferLength;
+            bufferView.setUint8(this.bufferLength++, 0x80);
+            // Ensure the final block has enough room for the hashed length
+            if (undecoratedLength % constants_1.BLOCK_SIZE >= constants_1.BLOCK_SIZE - 8) {
+                for (var i = this.bufferLength; i < constants_1.BLOCK_SIZE; i++) {
+                    bufferView.setUint8(i, 0);
+                }
+                this.hashBuffer();
+                this.bufferLength = 0;
+            }
+            for (var i = this.bufferLength; i < constants_1.BLOCK_SIZE - 8; i++) {
+                bufferView.setUint8(i, 0);
+            }
+            bufferView.setUint32(constants_1.BLOCK_SIZE - 8, Math.floor(bitsHashed / 0x100000000), true);
+            bufferView.setUint32(constants_1.BLOCK_SIZE - 4, bitsHashed);
+            this.hashBuffer();
+            this.finished = true;
+        }
+        // The value in state is little-endian rather than big-endian, so flip
+        // each word into a new Uint8Array
+        var out = new Uint8Array(constants_1.DIGEST_LENGTH);
+        for (var i = 0; i < 8; i++) {
+            out[i * 4] = (this.state[i] >>> 24) & 0xff;
+            out[i * 4 + 1] = (this.state[i] >>> 16) & 0xff;
+            out[i * 4 + 2] = (this.state[i] >>> 8) & 0xff;
+            out[i * 4 + 3] = (this.state[i] >>> 0) & 0xff;
+        }
+        return out;
+    };
+    RawSha256.prototype.hashBuffer = function () {
+        var _a = this, buffer = _a.buffer, state = _a.state;
+        var state0 = state[0], state1 = state[1], state2 = state[2], state3 = state[3], state4 = state[4], state5 = state[5], state6 = state[6], state7 = state[7];
+        for (var i = 0; i < constants_1.BLOCK_SIZE; i++) {
+            if (i < 16) {
+                this.temp[i] =
+                    ((buffer[i * 4] & 0xff) << 24) |
+                        ((buffer[i * 4 + 1] & 0xff) << 16) |
+                        ((buffer[i * 4 + 2] & 0xff) << 8) |
+                        (buffer[i * 4 + 3] & 0xff);
+            }
+            else {
+                var u = this.temp[i - 2];
+                var t1_1 = ((u >>> 17) | (u << 15)) ^ ((u >>> 19) | (u << 13)) ^ (u >>> 10);
+                u = this.temp[i - 15];
+                var t2_1 = ((u >>> 7) | (u << 25)) ^ ((u >>> 18) | (u << 14)) ^ (u >>> 3);
+                this.temp[i] =
+                    ((t1_1 + this.temp[i - 7]) | 0) + ((t2_1 + this.temp[i - 16]) | 0);
+            }
+            var t1 = ((((((state4 >>> 6) | (state4 << 26)) ^
+                ((state4 >>> 11) | (state4 << 21)) ^
+                ((state4 >>> 25) | (state4 << 7))) +
+                ((state4 & state5) ^ (~state4 & state6))) |
+                0) +
+                ((state7 + ((constants_1.KEY[i] + this.temp[i]) | 0)) | 0)) |
+                0;
+            var t2 = ((((state0 >>> 2) | (state0 << 30)) ^
+                ((state0 >>> 13) | (state0 << 19)) ^
+                ((state0 >>> 22) | (state0 << 10))) +
+                ((state0 & state1) ^ (state0 & state2) ^ (state1 & state2))) |
+                0;
+            state7 = state6;
+            state6 = state5;
+            state5 = state4;
+            state4 = (state3 + t1) | 0;
+            state3 = state2;
+            state2 = state1;
+            state1 = state0;
+            state0 = (t1 + t2) | 0;
+        }
+        state[0] += state0;
+        state[1] += state1;
+        state[2] += state2;
+        state[3] += state3;
+        state[4] += state4;
+        state[5] += state5;
+        state[6] += state6;
+        state[7] += state7;
+    };
+    return RawSha256;
+}());
+exports.RawSha256 = RawSha256;
+//# sourceMappingURL=RawSha256.js.map
+
+/***/ }),
+
+/***/ 5625:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MAX_HASHABLE_LENGTH = exports.INIT = exports.KEY = exports.DIGEST_LENGTH = exports.BLOCK_SIZE = void 0;
+/**
+ * @internal
+ */
+exports.BLOCK_SIZE = 64;
+/**
+ * @internal
+ */
+exports.DIGEST_LENGTH = 32;
+/**
+ * @internal
+ */
+exports.KEY = new Uint32Array([
+    0x428a2f98,
+    0x71374491,
+    0xb5c0fbcf,
+    0xe9b5dba5,
+    0x3956c25b,
+    0x59f111f1,
+    0x923f82a4,
+    0xab1c5ed5,
+    0xd807aa98,
+    0x12835b01,
+    0x243185be,
+    0x550c7dc3,
+    0x72be5d74,
+    0x80deb1fe,
+    0x9bdc06a7,
+    0xc19bf174,
+    0xe49b69c1,
+    0xefbe4786,
+    0x0fc19dc6,
+    0x240ca1cc,
+    0x2de92c6f,
+    0x4a7484aa,
+    0x5cb0a9dc,
+    0x76f988da,
+    0x983e5152,
+    0xa831c66d,
+    0xb00327c8,
+    0xbf597fc7,
+    0xc6e00bf3,
+    0xd5a79147,
+    0x06ca6351,
+    0x14292967,
+    0x27b70a85,
+    0x2e1b2138,
+    0x4d2c6dfc,
+    0x53380d13,
+    0x650a7354,
+    0x766a0abb,
+    0x81c2c92e,
+    0x92722c85,
+    0xa2bfe8a1,
+    0xa81a664b,
+    0xc24b8b70,
+    0xc76c51a3,
+    0xd192e819,
+    0xd6990624,
+    0xf40e3585,
+    0x106aa070,
+    0x19a4c116,
+    0x1e376c08,
+    0x2748774c,
+    0x34b0bcb5,
+    0x391c0cb3,
+    0x4ed8aa4a,
+    0x5b9cca4f,
+    0x682e6ff3,
+    0x748f82ee,
+    0x78a5636f,
+    0x84c87814,
+    0x8cc70208,
+    0x90befffa,
+    0xa4506ceb,
+    0xbef9a3f7,
+    0xc67178f2
+]);
+/**
+ * @internal
+ */
+exports.INIT = [
+    0x6a09e667,
+    0xbb67ae85,
+    0x3c6ef372,
+    0xa54ff53a,
+    0x510e527f,
+    0x9b05688c,
+    0x1f83d9ab,
+    0x5be0cd19
+];
+/**
+ * @internal
+ */
+exports.MAX_HASHABLE_LENGTH = Math.pow(2, 53) - 1;
+//# sourceMappingURL=constants.js.map
+
+/***/ }),
+
+/***/ 81:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var tslib_1 = __nccwpck_require__(9439);
+tslib_1.__exportStar(__nccwpck_require__(9828), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 9828:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Sha256 = void 0;
+var tslib_1 = __nccwpck_require__(9439);
+var constants_1 = __nccwpck_require__(5625);
+var RawSha256_1 = __nccwpck_require__(8901);
+var util_1 = __nccwpck_require__(1236);
+var Sha256 = /** @class */ (function () {
+    function Sha256(secret) {
+        this.secret = secret;
+        this.hash = new RawSha256_1.RawSha256();
+        this.reset();
+    }
+    Sha256.prototype.update = function (toHash) {
+        if ((0, util_1.isEmptyData)(toHash) || this.error) {
+            return;
+        }
+        try {
+            this.hash.update((0, util_1.convertToBuffer)(toHash));
+        }
+        catch (e) {
+            this.error = e;
+        }
+    };
+    /* This synchronous method keeps compatibility
+     * with the v2 aws-sdk.
+     */
+    Sha256.prototype.digestSync = function () {
+        if (this.error) {
+            throw this.error;
+        }
+        if (this.outer) {
+            if (!this.outer.finished) {
+                this.outer.update(this.hash.digest());
+            }
+            return this.outer.digest();
+        }
+        return this.hash.digest();
+    };
+    /* The underlying digest method here is synchronous.
+     * To keep the same interface with the other hash functions
+     * the default is to expose this as an async method.
+     * However, it can sometimes be useful to have a sync method.
+     */
+    Sha256.prototype.digest = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                return [2 /*return*/, this.digestSync()];
+            });
+        });
+    };
+    Sha256.prototype.reset = function () {
+        this.hash = new RawSha256_1.RawSha256();
+        if (this.secret) {
+            this.outer = new RawSha256_1.RawSha256();
+            var inner = bufferFromSecret(this.secret);
+            var outer = new Uint8Array(constants_1.BLOCK_SIZE);
+            outer.set(inner);
+            for (var i = 0; i < constants_1.BLOCK_SIZE; i++) {
+                inner[i] ^= 0x36;
+                outer[i] ^= 0x5c;
+            }
+            this.hash.update(inner);
+            this.outer.update(outer);
+            // overwrite the copied key in memory
+            for (var i = 0; i < inner.byteLength; i++) {
+                inner[i] = 0;
+            }
+        }
+    };
+    return Sha256;
+}());
+exports.Sha256 = Sha256;
+function bufferFromSecret(secret) {
+    var input = (0, util_1.convertToBuffer)(secret);
+    if (input.byteLength > constants_1.BLOCK_SIZE) {
+        var bufferHash = new RawSha256_1.RawSha256();
+        bufferHash.update(input);
+        input = bufferHash.digest();
+    }
+    var buffer = new Uint8Array(constants_1.BLOCK_SIZE);
+    buffer.set(input);
+    return buffer;
+}
+//# sourceMappingURL=jsSha256.js.map
+
+/***/ }),
+
+/***/ 9439:
+/***/ ((module) => {
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+/* global global, define, System, Reflect, Promise */
+var __extends;
+var __assign;
+var __rest;
+var __decorate;
+var __param;
+var __metadata;
+var __awaiter;
+var __generator;
+var __exportStar;
+var __values;
+var __read;
+var __spread;
+var __spreadArrays;
+var __await;
+var __asyncGenerator;
+var __asyncDelegator;
+var __asyncValues;
+var __makeTemplateObject;
+var __importStar;
+var __importDefault;
+var __classPrivateFieldGet;
+var __classPrivateFieldSet;
+var __createBinding;
+(function (factory) {
+    var root = typeof global === "object" ? global : typeof self === "object" ? self : typeof this === "object" ? this : {};
+    if (typeof define === "function" && define.amd) {
+        define("tslib", ["exports"], function (exports) { factory(createExporter(root, createExporter(exports))); });
+    }
+    else if ( true && typeof module.exports === "object") {
+        factory(createExporter(root, createExporter(module.exports)));
+    }
+    else {
+        factory(createExporter(root));
+    }
+    function createExporter(exports, previous) {
+        if (exports !== root) {
+            if (typeof Object.create === "function") {
+                Object.defineProperty(exports, "__esModule", { value: true });
+            }
+            else {
+                exports.__esModule = true;
+            }
+        }
+        return function (id, v) { return exports[id] = previous ? previous(id, v) : v; };
+    }
+})
+(function (exporter) {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+
+    __extends = function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+
+    __rest = function (s, e) {
+        var t = {};
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+            t[p] = s[p];
+        if (s != null && typeof Object.getOwnPropertySymbols === "function")
+            for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+                if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                    t[p[i]] = s[p[i]];
+            }
+        return t;
+    };
+
+    __decorate = function (decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+
+    __param = function (paramIndex, decorator) {
+        return function (target, key) { decorator(target, key, paramIndex); }
+    };
+
+    __metadata = function (metadataKey, metadataValue) {
+        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+    };
+
+    __awaiter = function (thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    };
+
+    __generator = function (thisArg, body) {
+        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        function verb(n) { return function (v) { return step([n, v]); }; }
+        function step(op) {
+            if (f) throw new TypeError("Generator is already executing.");
+            while (_) try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0: case 1: t = op; break;
+                    case 4: _.label++; return { value: op[1], done: false };
+                    case 5: _.label++; y = op[1]; op = [0]; continue;
+                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop(); continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+        }
+    };
+
+    __createBinding = function(o, m, k, k2) {
+        if (k2 === undefined) k2 = k;
+        o[k2] = m[k];
+    };
+
+    __exportStar = function (m, exports) {
+        for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) exports[p] = m[p];
+    };
+
+    __values = function (o) {
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+        if (m) return m.call(o);
+        if (o && typeof o.length === "number") return {
+            next: function () {
+                if (o && i >= o.length) o = void 0;
+                return { value: o && o[i++], done: !o };
+            }
+        };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+    };
+
+    __read = function (o, n) {
+        var m = typeof Symbol === "function" && o[Symbol.iterator];
+        if (!m) return o;
+        var i = m.call(o), r, ar = [], e;
+        try {
+            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+        }
+        catch (error) { e = { error: error }; }
+        finally {
+            try {
+                if (r && !r.done && (m = i["return"])) m.call(i);
+            }
+            finally { if (e) throw e.error; }
+        }
+        return ar;
+    };
+
+    __spread = function () {
+        for (var ar = [], i = 0; i < arguments.length; i++)
+            ar = ar.concat(__read(arguments[i]));
+        return ar;
+    };
+
+    __spreadArrays = function () {
+        for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+        for (var r = Array(s), k = 0, i = 0; i < il; i++)
+            for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+                r[k] = a[j];
+        return r;
+    };
+
+    __await = function (v) {
+        return this instanceof __await ? (this.v = v, this) : new __await(v);
+    };
+
+    __asyncGenerator = function (thisArg, _arguments, generator) {
+        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        var g = generator.apply(thisArg, _arguments || []), i, q = [];
+        return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+        function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+        function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+        function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);  }
+        function fulfill(value) { resume("next", value); }
+        function reject(value) { resume("throw", value); }
+        function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+    };
+
+    __asyncDelegator = function (o) {
+        var i, p;
+        return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
+        function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
+    };
+
+    __asyncValues = function (o) {
+        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        var m = o[Symbol.asyncIterator], i;
+        return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+        function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+    };
+
+    __makeTemplateObject = function (cooked, raw) {
+        if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+        return cooked;
+    };
+
+    __importStar = function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+        result["default"] = mod;
+        return result;
+    };
+
+    __importDefault = function (mod) {
+        return (mod && mod.__esModule) ? mod : { "default": mod };
+    };
+
+    __classPrivateFieldGet = function (receiver, privateMap) {
+        if (!privateMap.has(receiver)) {
+            throw new TypeError("attempted to get private field on non-instance");
+        }
+        return privateMap.get(receiver);
+    };
+
+    __classPrivateFieldSet = function (receiver, privateMap, value) {
+        if (!privateMap.has(receiver)) {
+            throw new TypeError("attempted to set private field on non-instance");
+        }
+        privateMap.set(receiver, value);
+        return value;
+    };
+
+    exporter("__extends", __extends);
+    exporter("__assign", __assign);
+    exporter("__rest", __rest);
+    exporter("__decorate", __decorate);
+    exporter("__param", __param);
+    exporter("__metadata", __metadata);
+    exporter("__awaiter", __awaiter);
+    exporter("__generator", __generator);
+    exporter("__exportStar", __exportStar);
+    exporter("__createBinding", __createBinding);
+    exporter("__values", __values);
+    exporter("__read", __read);
+    exporter("__spread", __spread);
+    exporter("__spreadArrays", __spreadArrays);
+    exporter("__await", __await);
+    exporter("__asyncGenerator", __asyncGenerator);
+    exporter("__asyncDelegator", __asyncDelegator);
+    exporter("__asyncValues", __asyncValues);
+    exporter("__makeTemplateObject", __makeTemplateObject);
+    exporter("__importStar", __importStar);
+    exporter("__importDefault", __importDefault);
+    exporter("__classPrivateFieldGet", __classPrivateFieldGet);
+    exporter("__classPrivateFieldSet", __classPrivateFieldSet);
+});
+
+
+/***/ }),
+
 /***/ 3228:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -47490,16 +48121,28 @@ module.exports = {
  * @param {string} folder The folder name provided will be zipped
  * @param {string} zipFileName Name of the tar.gz file to be created
  */
-const { createHash, getHashes } = __nccwpck_require__(6113)
+const { createHash } = __nccwpck_require__(6113)
 const exec = __nccwpck_require__(1514)
 const fs = __nccwpck_require__(7147)
-const { resolve } = __nccwpck_require__(1017)
+const stream = __nccwpck_require__(4845)
+const { Sha256 } = __nccwpck_require__(81)
+
+
+// async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
+//   await exec.exec('tar', ['-czvf', zipFileName, folder])
+//   const data = fs.readFileSync(zipFileName)
+//   const hash = await createHash('SHA-256').update(data).digest('hex')
+//   console.log(hash)
+//   return hash
+// }
 
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
-  const data = fs.readFileSync(zipFileName)
-  const hash = await createHash('sha-256').update(data)
-  return hash.digest('hex')
+  const data = fs.createReadStream(zipFileName)
+  const hash = new Sha256()
+  hash.update(data)
+  const shaHash = await hash.digest()
+  return shaHash
 }
 
 module.exports = { creategzFile }
@@ -47680,6 +48323,14 @@ module.exports = require("querystring");
 
 "use strict";
 module.exports = require("stream");
+
+/***/ }),
+
+/***/ 4845:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("stream/promises");
 
 /***/ }),
 

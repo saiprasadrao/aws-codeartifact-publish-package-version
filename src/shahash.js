@@ -6,6 +6,7 @@ const { createHash } = require('crypto')
 const exec = require('@actions/exec')
 const fs = require('fs')
 const stream = require('stream/promises')
+const { Sha256 } = require('@aws-crypto/sha256-js')
 
 
 // async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
@@ -19,9 +20,10 @@ const stream = require('stream/promises')
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
   const data = fs.createReadStream(zipFileName)
-  const hash = createHash('sha256')
-  await stream.pipeline(data, hash)
-  return hash
+  const hash = new Sha256()
+  hash.update(data)
+  const shaHash = await hash.digest()
+  return shaHash
 }
 
 module.exports = { creategzFile }
