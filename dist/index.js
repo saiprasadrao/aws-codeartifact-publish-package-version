@@ -48120,15 +48120,13 @@ module.exports = {
  * @param {string} folder The folder name provided will be zipped
  * @param {string} zipFileName Name of the tar.gz file to be created
  */
-const { createHash } = __nccwpck_require__(6113)
 const exec = __nccwpck_require__(1514)
 const fs = __nccwpck_require__(7147)
-const stream = __nccwpck_require__(4845)
 const { Sha256 } = __nccwpck_require__(81)
 
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
-  const data = fs.createReadStream(zipFileName)
+  const data = fs.readFileSync(zipFileName)
   const hash = new Sha256()
   hash.update(data)
   const shaHash = await hash.digest()
@@ -48313,14 +48311,6 @@ module.exports = require("querystring");
 
 "use strict";
 module.exports = require("stream");
-
-/***/ }),
-
-/***/ 4845:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("stream/promises");
 
 /***/ }),
 
