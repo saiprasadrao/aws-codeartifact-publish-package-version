@@ -40,7 +40,7 @@ jobs:
           package_name: 'github-test'
           namespace: 'github-test'
           package_version: '0.0.1'
-          folder: 'LICENSE'
+          files: 'LICENSE'
       
       - name: Deleting the test artifact
         id: aws-codeartifact-delete-package-versions
