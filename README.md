@@ -2,9 +2,9 @@
 
 Creates a new generic package version containing one or more assets (or files).
 
-Required: `aws-actions/configure-aws-credentials`
+## `Depends on action`: 
 
-Deletes one or more versions of a package from AWS codeartifacts. A deleted package version cannot be restored in your repository. If you want to remove a package version from your repository and be able to restore it later, set its status to Archived
+- `aws-actions/configure-aws-credentials`
 
 ## `domain`
 
