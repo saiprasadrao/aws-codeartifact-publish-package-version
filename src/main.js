@@ -22,12 +22,12 @@ async function run() {
       assetContent: 'temp.tar.gz',
       assetName: 'temp.tar.gz', // required
       assetSHA256: hash, // required
-      domain,
-      format,
+      domain: domain,
+      format: format,
       package: packageName, // required
-      packageVersion, // required
-      repository, // required
-      domainOwner,
+      packageVersion: packageVersion, // required
+      repository: repository, // required
+      domainOwner: domainOwner,
       namespace: packageName
     }
 
