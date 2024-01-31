@@ -28,18 +28,18 @@ jobs:
           role-session-name: samplerolesession
           aws-region: ${{ secrets.REGION }}
           
-      # - name: Test Local Action
-      #   id: test-action
-      #   uses: ./
-      #   with:
-      #     domain: ${{ secrets.DOMAIN }}
-      #     domain-owner: ${{ secrets.OWNER }}
-      #     region: ${{ secrets.REGION }}
-      #     repository: ${{ secrets.REPO_NAME }}
-      #     format: 'generic'
-      #     package_name: 'github-test'
-      #     package_version: '0.0.1'
-      #     folder: 'LICENSE'
+      - name: Test Local Action
+        id: test-action
+        uses: ./
+        with:
+          domain: ${{ secrets.DOMAIN }}
+          domain-owner: ${{ secrets.OWNER }}
+          region: ${{ secrets.REGION }}
+          repository: ${{ secrets.REPO_NAME }}
+          format: 'generic'
+          package_name: 'github-test'
+          package_version: '0.0.1'
+          folder: 'LICENSE'
       
       - name: Deleting the test artifact
         id: aws-codeartifact-delete-package-versions
