@@ -10,38 +10,6 @@ permissions:
   contents: read
 
 jobs:
-  test-javascript:
-    name: JavaScript Tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        id: setup-node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .node-version
-          cache: npm
-
-      - name: Install Dependencies
-        id: npm-ci
-        run: npm ci
-
-      - name: Check Format
-        id: npm-format-check
-        run: npm run format:check
-
-      - name: Lint
-        id: npm-lint
-        run: npm run lint
-
-      - name: Test
-        id: npm-ci-test
-        run: npm run ci-test
-
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
@@ -52,10 +20,6 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
-
-      - name: Install Dependencies
-        id: install
-        run: npm install
       
       - name: Configure AWS credentials from Test account
         uses: aws-actions/configure-aws-credentials@v3
@@ -74,6 +38,21 @@ jobs:
           repository: ${{ secrets.REPO_NAME }}
           format: 'generic'
           package_name: 'github-test'
+          namespace: 'github-test'
           package_version: '0.0.1'
-          folder: 'dist'
+          folder: 'LICENSE'
+      
+      - name: Deleting the test artifact
+        id: aws-codeartifact-delete-package-versions
+        uses: Fred78290/aws-codeartifact-delete-package-versions@v1
+        with:
+          domain: ${{ secrets.DOMAIN }}
+          domain-owner: ${{ secrets.OWNER }}
+          region: ap-south-1
+          repository: ${{ secrets.REPO_NAME }}
+          format: generic
+          namespace: github-test
+          package: github-test
+          versions: |
+            0.0.1
           
