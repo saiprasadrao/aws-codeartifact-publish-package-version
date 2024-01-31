@@ -32,5 +32,5 @@ inputs:
     description: "Folder that will be published as .gz file"
     required: true 
 runs:
-  using: 'node20'
-  main: 'src/index.js'
+  using: 'composite'
+  steps:
