@@ -19342,8 +19342,7 @@ var getCanonicalHeaders = /* @__PURE__ */ __name(({ headers }, unsignableHeaders
         continue;
       }
     }
-    // canonical[canonicalHeaderName] = headers[headerName].trim().replace(/\s+/g, " ");
-    canonical[canonicalHeaderName] = String(headers[headerName]).trim().replace(/\s+/g, " ");
+    canonical[canonicalHeaderName] = headers[headerName].trim().replace(/\s+/g, " ");
   }
   return canonical;
 }, "getCanonicalHeaders");
