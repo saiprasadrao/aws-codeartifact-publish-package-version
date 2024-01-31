@@ -36,7 +36,7 @@ runs:
   steps:
     - shell: bash
       run: |
-        tar -czvf mcc-agent.tar.gz ${{ inputs.folder }}
+        tar -czvf temp.tar.gz ${{ inputs.folder }}
         export ASSET_SHA256=$(sha256sum temp.tar.gz | awk '{print $1;}')
         aws codeartifact publish-package-version --domain ${{ inputs.domain }} --repository ${{ inputs.repository }} \
           --format ${{ inputs.format }} --namespace ${{ inputs.package_name }} --package ${{ inputs.package_name }} --package-version ${{ inputs.package_version }} \
