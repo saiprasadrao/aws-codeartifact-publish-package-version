@@ -38,6 +38,7 @@ jobs:
           repository: ${{ secrets.REPO_NAME }}
           format: 'generic'
           package_name: 'github-test'
+          namespace: 'github-test'
           package_version: '0.0.1'
           folder: 'LICENSE'
       

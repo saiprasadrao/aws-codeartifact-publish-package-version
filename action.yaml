@@ -11,7 +11,7 @@ inputs:
     required: true
   domain-owner:
     description: "The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces."
-    required: false
+    required: true
   region:
     description: "AWS Region where CodeArtifact is enabled or will be used."
     required: true
@@ -31,6 +31,9 @@ inputs:
   folder:
     description: "Folder that will be published as .gz file"
     required: true 
+  namespace:
+    description: "The namespace of the package. The package component that specifies its namespace depends on its type"
+    required: true
 runs:
   using: 'composite'
   steps:
@@ -39,6 +42,6 @@ runs:
         tar -czvf temp.tar.gz ${{ inputs.folder }}
         export ASSET_SHA256=$(sha256sum temp.tar.gz | awk '{print $1;}')
         aws codeartifact publish-package-version --domain ${{ inputs.domain }} --repository ${{ inputs.repository }} \
-          --format ${{ inputs.format }} --namespace ${{ inputs.package_name }} --package ${{ inputs.package_name }} --package-version ${{ inputs.package_version }} \
+          --format ${{ inputs.format }} --namespace ${{ inputs.namespace }} --package ${{ inputs.package_name }} --package-version ${{ inputs.package_version }} \
           --asset-content temp.tar.gz --asset-name temp.tar.gz \
           --asset-sha256 $ASSET_SHA256
