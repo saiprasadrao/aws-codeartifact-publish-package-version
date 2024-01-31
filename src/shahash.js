@@ -2,16 +2,17 @@
  * @param {string} folder The folder name provided will be zipped
  * @param {string} zipFileName Name of the tar.gz file to be created
  */
-const { createHash, getHashes } = require('crypto')
+const { createHmac } = require('crypto')
 const exec = require('@actions/exec')
 const fs = require('fs')
-const { resolve } = require('path')
+
 
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
   const data = fs.readFileSync(zipFileName)
-  const hash = await createHash('sha-256').update(data)
-  return hash.digest('hex')
+  const hash = await createHmac('sha256', 'secret').update(data).digest('hex')
+  console.log(hash)
+  return hash
 }
 
 module.exports = { creategzFile }
