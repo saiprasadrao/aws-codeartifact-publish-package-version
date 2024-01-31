@@ -48126,15 +48126,6 @@ const fs = __nccwpck_require__(7147)
 const stream = __nccwpck_require__(4845)
 const { Sha256 } = __nccwpck_require__(81)
 
-
-// async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
-//   await exec.exec('tar', ['-czvf', zipFileName, folder])
-//   const data = fs.readFileSync(zipFileName)
-//   const hash = await createHash('SHA-256').update(data).digest('hex')
-//   console.log(hash)
-//   return hash
-// }
-
 async function creategzFile(folder, zipFileName = 'temp.tar.gz') {
   await exec.exec('tar', ['-czvf', zipFileName, folder])
   const data = fs.createReadStream(zipFileName)
