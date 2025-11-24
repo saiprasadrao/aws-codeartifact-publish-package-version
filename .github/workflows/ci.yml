@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Configure AWS credentials from Test account
         uses: aws-actions/configure-aws-credentials@v3
